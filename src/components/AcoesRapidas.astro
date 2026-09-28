@@ -20,13 +20,11 @@ const mensagemZap = encodeURIComponent("Vim pelo site, quero fazer um orçamento
       class="w-full py-4 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-2xl shadow-lg transition-all flex items-center justify-between group active:scale-[0.98]"
     >
       <div class="flex items-center gap-3">
-        <svg class="w-6 h-6 fill-current text-emerald-200" viewBox="0 0 24 24">
-          <path d="M12.031 2c-5.517 0-9.993 4.476-9.993 9.993 0 1.763.459 3.486 1.332 5.003l-1.417 5.176 5.297-1.389c1.465.8 3.118 1.22 4.781 1.22h.004c5.517 0 9.993-4.476 9.993-9.993 0-2.673-1.041-5.186-2.931-7.076-1.89-1.89-4.403-2.934-7.066-2.934zm0 18.313h-.003c-1.493 0-2.957-.401-4.232-1.157l-.304-.18-3.146.825.839-3.067-.198-.315c-.832-1.323-1.272-2.859-1.272-4.426 0-4.593 3.737-8.33 8.332-8.33 2.225 0 4.316.867 5.889 2.441 1.573 1.574 2.439 3.665 2.439 5.89 0 4.594-3.737 8.33-8.334 8.33z"/>
-        </svg>
-        <span class="text-base">WhatsApp — {contato.nome}</span>
+        <i class="fa-brands fa-whatsapp text-2xl text-emerald-200"></i>
+        <span class="text-base">{contato.nome}</span>
       </div>
       <span class="text-xs bg-emerald-700/50 group-hover:bg-emerald-700 px-2.5 py-1 rounded-full text-emerald-100">
-        Orçamento
+        WhatsApp
       </span>
     </a>
   ))}
@@ -90,6 +88,7 @@ const mensagemZap = encodeURIComponent("Vim pelo site, quero fazer um orçamento
   </svg>
   <span>PIX CNPJ copiado com sucesso!</span>
 </div>
+
 <script>
   const btnPix = document.getElementById('btn-copy-pix');
   const toast = document.getElementById('toast-pix');
