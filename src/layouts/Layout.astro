@@ -15,14 +15,14 @@ const { title = config.empresa.nome } = Astro.props;
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/webp" href="/favicon.webp" />
-		<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)" />
+        
+        <!-- Font Awesome CDN corrigido -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+        
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
-
-
-
     </head>
     <body class="bg-gray-50 text-gray-800 antialiased min-h-screen flex flex-col">
         <slot />
     </body>
-</html>		
+</html>
