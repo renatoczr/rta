@@ -36,19 +36,38 @@ import Rodape from '../components/Rodape.astro';
           </table>
         </div>
 
-        <div class="flex gap-3">
+        <!-- Painel de Ações Rápidas (WhatsApp, Imprimir, Copiar e Fechar) -->
+        <div class="flex flex-col gap-3 print:hidden">
           <button
-            id="btn-copiar"
-            class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl text-sm transition-all text-center"
+            id="btn-whatsapp"
+            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-lg"
           >
-            Copiar Texto da Lista
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.762.459 3.48 1.332 5.001L2 22l5.124-1.334c1.472.802 3.136 1.224 4.884 1.224 5.508 0 9.99-4.478 9.99-9.984 0-2.665-1.037-5.17-2.925-7.059A9.92 9.92 0 0 0 12.012 2z"/>
+            </svg>
+            Enviar no WhatsApp do Cliente
           </button>
-          <a
-            href="/gerar"
-            class="bg-amber-500 hover:bg-amber-400 text-black font-semibold py-3 px-5 rounded-xl text-sm transition-all text-center"
-          >
-            Nova Lista
-          </a>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <button
+              id="btn-copiar"
+              class="bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-3 rounded-xl text-xs transition-all text-center"
+            >
+              Copiar Texto
+            </button>
+            <button
+              id="btn-imprimir"
+              class="bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-3 rounded-xl text-xs transition-all text-center"
+            >
+              Imprimir / PDF
+            </button>
+            <a
+              href="/gerar"
+              class="col-span-2 sm:col-span-1 bg-amber-500 hover:bg-amber-400 text-black font-semibold py-3 px-3 rounded-xl text-xs transition-all text-center flex items-center justify-center"
+            >
+              Criar Nova Lista
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -67,7 +86,10 @@ import Rodape from '../components/Rodape.astro';
   const elClienteInfo = document.getElementById('cliente-info');
   const elData = document.getElementById('data-lista');
   const elTabela = document.getElementById('tabela-itens');
+  
+  const btnWhatsapp = document.getElementById('btn-whatsapp');
   const btnCopiar = document.getElementById('btn-copiar');
+  const btnImprimir = document.getElementById('btn-imprimir');
 
   if (!id) {
     if (elCarregando) elCarregando.classList.add('hidden');
@@ -107,15 +129,40 @@ import Rodape from '../components/Rodape.astro';
         if (elCarregando) elCarregando.classList.add('hidden');
         if (elConteudo) elConteudo.classList.remove('hidden');
 
-        btnCopiar?.addEventListener('click', () => {
+        // Formatação do texto da lista
+        const gerarTextoLista = () => {
           let texto = `*Lista de Materiais — RTA Serviços Elétricos*\n`;
           texto += `Cliente: ${dados.nome}\nData: ${dados.data}\n\n`;
           dados.itens.forEach((i: { qtd: string; desc: string }) => {
             texto += `• ${i.qtd}x ${i.desc}\n`;
           });
+          return texto;
+        };
 
-          navigator.clipboard.writeText(texto);
-          alert('Lista copiada para a área de transferência!');
+        // Ação: Botão WhatsApp
+        btnWhatsapp?.addEventListener('click', () => {
+          const foneLimpo = dados.fone.replace(/\D/g, '');
+          const linkLista = window.location.href;
+          const mensagem = encodeURIComponent(
+            `${gerarTextoLista()}\nVisualizar online:\n${linkLista}`
+          );
+          
+          const urlWhatsapp = foneLimpo 
+            ? `https://wa.me/55${foneLimpo}?text=${mensagem}`
+            : `https://wa.me/?text=${mensagem}`;
+            
+          window.open(urlWhatsapp, '_blank');
+        });
+
+        // Ação: Botão Copiar
+        btnCopiar?.addEventListener('click', () => {
+          navigator.clipboard.writeText(`${gerarTextoLista()}\nLink: ${window.location.href}`);
+          alert('Lista e link copiados com sucesso!');
+        });
+
+        // Ação: Botão Imprimir
+        btnImprimir?.addEventListener('click', () => {
+          window.print();
         });
       })
       .catch(() => {
