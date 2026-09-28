@@ -1,0 +1,10 @@
+{
+  "name": "rta-servicos",
+  "compatibility_date": "2024-09-28",
+  "kv_namespaces": [
+    {
+      "binding": "LISTAS_KV",
+      "id": "listas_kv_local"
+    }
+  ]
+}

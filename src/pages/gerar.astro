@@ -73,6 +73,7 @@ import Rodape from '../components/Rodape.astro';
 
           <button
             type="submit"
+            id="btn-submit"
             class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all text-center"
           >
             Gerar e Visualizar Lista
@@ -84,10 +85,12 @@ import Rodape from '../components/Rodape.astro';
 
   <Rodape />
 </Layout>
+
 <script>
   const container = document.getElementById('container-linhas');
   const btnAdd = document.getElementById('btn-add-linha');
   const form = document.getElementById('form-lista') as HTMLFormElement;
+  const btnSubmit = document.getElementById('btn-submit') as HTMLButtonElement;
 
   function criarNovaLinha() {
     const div = document.createElement('div');
@@ -130,8 +133,13 @@ import Rodape from '../components/Rodape.astro';
     }
   });
 
-  form?.addEventListener('submit', (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.innerText = 'Gerando lista na nuvem...';
+    }
 
     const nome = (document.getElementById('cliente-nome') as HTMLInputElement).value;
     const fone = (document.getElementById('cliente-fone') as HTMLInputElement).value;
@@ -144,14 +152,40 @@ import Rodape from '../components/Rodape.astro';
       if (qtd && desc) itens.push({ qtd, desc });
     });
 
-    // Criar um ID único baseado no timestamp
-    const idLista = 'rta_' + Date.now();
-    const dadosObj = { id: idLista, nome, fone, itens, data: new Date().toLocaleDateString('pt-BR') };
+    const dadosObj = {
+      nome,
+      fone,
+      itens,
+      data: new Date().toLocaleDateString('pt-BR')
+    };
 
-    // Salva o JSON indexado pelo ID
-    localStorage.setItem(`rta_lista_${idLista}`, JSON.stringify(dadosObj));
+    try {
+      // Salva no Cloudflare KV via API do projeto
+      const response = await fetch('/api/salvar-lista.json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dadosObj),
+      });
 
-    // Redireciona com a URL limpa contendo o ID
-    window.location.href = `/lista?id=${idLista}`;
+      const resultado = await response.json();
+
+      if (resultado.id) {
+        // Redireciona para a página de exibição com o ID do KV na URL
+        window.location.href = `/lista?id=${resultado.id}`;
+      } else {
+        alert('Erro ao salvar no servidor. Tente novamente.');
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.innerText = 'Gerar e Visualizar Lista';
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Erro de conexão ao salvar a lista.');
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = 'Gerar e Visualizar Lista';
+      }
+    }
   });
 </script>
