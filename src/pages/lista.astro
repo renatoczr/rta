@@ -18,7 +18,7 @@ import Rodape from '../components/Rodape.astro';
       <div id="conteudo-lista" class="hidden">
         <div class="flex justify-between items-start mb-6 border-b border-zinc-800 pb-4">
           <div>
-            <h1 class="text-2xl font-bold text-amber-400">Orçamento / Lista de Materiais</h1>
+            <h1 class="text-2xl font-bold text-amber-400">Lista de Materiais</h1>
             <p id="cliente-info" class="text-sm text-gray-300 mt-1"></p>
           </div>
           <span id="data-lista" class="text-xs text-gray-400 bg-zinc-800 px-3 py-1 rounded-full"></span>
@@ -36,7 +36,7 @@ import Rodape from '../components/Rodape.astro';
           </table>
         </div>
 
-        <!-- Painel de Ações Rápidas (WhatsApp, Imprimir, Copiar e Fechar) -->
+        <!-- Painel de Ações Rápidas -->
         <div class="flex flex-col gap-3 print:hidden">
           <button
             id="btn-whatsapp"
@@ -48,12 +48,12 @@ import Rodape from '../components/Rodape.astro';
             Enviar no WhatsApp do Cliente
           </button>
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div class="grid grid-cols-3 gap-2">
             <button
               id="btn-copiar"
               class="bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-3 rounded-xl text-xs transition-all text-center"
             >
-              Copiar Texto
+              Copiar Link
             </button>
             <button
               id="btn-imprimir"
@@ -62,10 +62,10 @@ import Rodape from '../components/Rodape.astro';
               Imprimir / PDF
             </button>
             <a
-              href="/gerar"
-              class="col-span-2 sm:col-span-1 bg-amber-500 hover:bg-amber-400 text-black font-semibold py-3 px-3 rounded-xl text-xs transition-all text-center flex items-center justify-center"
+              href="/"
+              class="bg-zinc-800 hover:bg-zinc-700 text-red-400 font-semibold py-3 px-3 rounded-xl text-xs transition-all text-center flex items-center justify-center border border-red-500/20"
             >
-              Criar Nova Lista
+              Fechar
             </a>
           </div>
         </div>
@@ -129,23 +129,13 @@ import Rodape from '../components/Rodape.astro';
         if (elCarregando) elCarregando.classList.add('hidden');
         if (elConteudo) elConteudo.classList.remove('hidden');
 
-        // Formatação do texto da lista
-        const gerarTextoLista = () => {
-          let texto = `*Lista de Materiais — RTA Serviços Elétricos*\n`;
-          texto += `Cliente: ${dados.nome}\nData: ${dados.data}\n\n`;
-          dados.itens.forEach((i: { qtd: string; desc: string }) => {
-            texto += `• ${i.qtd}x ${i.desc}\n`;
-          });
-          return texto;
-        };
-
-        // Ação: Botão WhatsApp
+        // Ação: Botão WhatsApp (com mensagem simplificada)
         btnWhatsapp?.addEventListener('click', () => {
           const foneLimpo = dados.fone.replace(/\D/g, '');
           const linkLista = window.location.href;
-          const mensagem = encodeURIComponent(
-            `${gerarTextoLista()}\nVisualizar online:\n${linkLista}`
-          );
+          
+          const mensagemTexto = `*Lista de Materiais — RTA Serviços Elétricos*\nCliente: ${dados.nome}\nData: ${dados.data}\n\nVisualizar online:\n${linkLista}`;
+          const mensagem = encodeURIComponent(mensagemTexto);
           
           const urlWhatsapp = foneLimpo 
             ? `https://wa.me/55${foneLimpo}?text=${mensagem}`
@@ -154,10 +144,10 @@ import Rodape from '../components/Rodape.astro';
           window.open(urlWhatsapp, '_blank');
         });
 
-        // Ação: Botão Copiar
+        // Ação: Botão Copiar Link
         btnCopiar?.addEventListener('click', () => {
-          navigator.clipboard.writeText(`${gerarTextoLista()}\nLink: ${window.location.href}`);
-          alert('Lista e link copiados com sucesso!');
+          navigator.clipboard.writeText(window.location.href);
+          alert('Link da lista copiado para a área de transferência!');
         });
 
         // Ação: Botão Imprimir
