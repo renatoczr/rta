@@ -1,0 +1,14 @@
+{
+  "site_url": "https://rta.pages.dev",
+  "empresa": {
+    "nome": "RTA Serviços Elétricos",
+    "cnpj": "49.200.101/0001-03",
+    "endereco": "Rua 03, qd B lt 34, Setor Floriano Gomes - Paraúna - Go",
+    "maps_url": "https://maps.app.goo.gl/MzqHEbs5wYMQoQ4V9"
+  },
+  "contatos": [
+    { "id": "zap_pai", "nome": "Roney Teixeira", "telefone": "5564999417147" },
+    { "id": "zap_filho", "nome": "Roney Arthur", "telefone": "5564999767640" },
+    { "id": "zap_esposa", "nome": "Central", "telefone": "5564999957238" }
+  ]
+}

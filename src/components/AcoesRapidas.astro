@@ -1,0 +1,115 @@
+---
+import config from '../data/config.json';
+
+// Limpa pontuações do CNPJ para gerar a chave PIX numérica
+const pixCnpj = config.empresa.cnpj.replace(/\D/g, '');
+const mensagemZap = encodeURIComponent("Vim pelo site, quero fazer um orçamento sem compromisso!");
+---
+
+<section class="w-full max-w-xl mx-auto px-4 py-8 flex flex-col gap-3">
+  <p class="text-xs font-semibold text-amber-500 uppercase tracking-widest text-center mb-1">
+    Atendimento Rápido
+  </p>
+
+  <!-- Botões de WhatsApp (Um por linha) -->
+  {config.contatos.map((contato) => (
+    <a
+      href={`https://wa.me/${contato.telefone}?text=${mensagemZap}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="w-full py-4 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-2xl shadow-lg transition-all flex items-center justify-between group active:scale-[0.98]"
+    >
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 fill-current text-emerald-200" viewBox="0 0 24 24">
+          <path d="M12.031 2c-5.517 0-9.993 4.476-9.993 9.993 0 1.763.459 3.486 1.332 5.003l-1.417 5.176 5.297-1.389c1.465.8 3.118 1.22 4.781 1.22h.004c5.517 0 9.993-4.476 9.993-9.993 0-2.673-1.041-5.186-2.931-7.076-1.89-1.89-4.403-2.934-7.066-2.934zm0 18.313h-.003c-1.493 0-2.957-.401-4.232-1.157l-.304-.18-3.146.825.839-3.067-.198-.315c-.832-1.323-1.272-2.859-1.272-4.426 0-4.593 3.737-8.33 8.332-8.33 2.225 0 4.316.867 5.889 2.441 1.573 1.574 2.439 3.665 2.439 5.89 0 4.594-3.737 8.33-8.334 8.33z"/>
+        </svg>
+        <span class="text-base">WhatsApp — {contato.nome}</span>
+      </div>
+      <span class="text-xs bg-emerald-700/50 group-hover:bg-emerald-700 px-2.5 py-1 rounded-full text-emerald-100">
+        Orçamento
+      </span>
+    </a>
+  ))}
+
+  <!-- Botão de Ligação Direta -->
+  <a
+    href={`tel:${config.contatos[0].telefone}`}
+    class="w-full py-4 px-5 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-2xl shadow-lg transition-all flex items-center justify-between active:scale-[0.98]"
+  >
+    <div class="flex items-center gap-3">
+      <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+      </svg>
+      <span class="text-base">Ligar Agora</span>
+    </div>
+    <span class="text-xs text-sky-200">Chamada</span>
+  </a>
+
+  <!-- Botão de Localização -->
+  <a
+    href={config.empresa.maps_url}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="w-full py-4 px-5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-gray-100 font-semibold rounded-2xl shadow-lg transition-all flex items-center justify-between active:scale-[0.98]"
+  >
+    <div class="flex items-center gap-3">
+      <svg class="w-6 h-6 stroke-amber-400" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <span class="text-base">Ver Localização no Mapa</span>
+    </div>
+    <span class="text-xs text-zinc-400">Google Maps</span>
+  </a>
+
+  <!-- Botão de Copiar PIX -->
+  <button
+    id="btn-copy-pix"
+    data-pix={pixCnpj}
+    class="w-full py-4 px-5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold rounded-2xl shadow-lg transition-all flex items-center justify-between active:scale-[0.98] cursor-pointer"
+  >
+    <div class="flex items-center gap-3">
+      <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+        <path d="M12 2L2 12l10 10 10-10L12 2zm0 3.8L18.2 12 12 18.2 5.8 12 12 5.8z"/>
+      </svg>
+      <span class="text-base">Copiar Chave PIX (CNPJ)</span>
+    </div>
+    <span class="text-xs bg-zinc-950/10 px-2.5 py-1 rounded-full text-zinc-900">
+      Clique para copiar
+    </span>
+  </button>
+</section>
+
+<!-- Balão Toast de Confirmação -->
+<div
+  id="toast-pix"
+  class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-900 text-amber-400 border border-amber-500/40 px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 pointer-events-none opacity-0 transition-all duration-300 z-50 text-sm font-semibold"
+>
+  <svg class="w-5 h-5 stroke-amber-400" fill="none" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+  </svg>
+  <span>PIX CNPJ copiado com sucesso!</span>
+</div>
+<script>
+  const btnPix = document.getElementById('btn-copy-pix');
+  const toast = document.getElementById('toast-pix');
+  let timeoutId: number;
+
+  btnPix?.addEventListener('click', () => {
+    const pixValue = btnPix.getAttribute('data-pix');
+    if (pixValue) {
+      navigator.clipboard.writeText(pixValue);
+
+      // Exibe o balão
+      toast?.classList.remove('opacity-0', 'translate-y-2');
+      toast?.classList.add('opacity-100', '-translate-y-2');
+
+      // Esconde após 3 segundos
+      clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => {
+        toast?.classList.remove('opacity-100', '-translate-y-2');
+        toast?.classList.add('opacity-0');
+      }, 3000);
+    }
+  });
+</script>

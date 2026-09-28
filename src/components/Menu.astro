@@ -1,0 +1,88 @@
+---
+import config from '../data/config.json';
+---
+
+<div 
+  id="menu-overlay" 
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300"
+></div>
+
+<aside 
+  id="menu-drawer" 
+  class="fixed top-0 right-0 h-full w-80 bg-[#121118] text-white z-50 transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col justify-between border-l border-amber-500/20"
+>
+  <div>
+    <!-- Cabeçalho do Menu -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-800">
+      <span class="text-amber-400 font-bold text-lg">Navegação</span>
+      <button id="close-menu" class="p-2 text-gray-400 hover:text-white rounded-lg transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Links de Navegação -->
+    <nav class="p-6 flex flex-col gap-4">
+      <a href="/" class="p-3 text-gray-200 hover:text-amber-400 hover:bg-white/5 rounded-lg transition-all font-medium">
+        Página Inicial
+      </a>
+      <a href="#sobre" class="p-3 text-gray-200 hover:text-amber-400 hover:bg-white/5 rounded-lg transition-all font-medium">
+        Sobre Nós & Serviços
+      </a>
+      <a href="#galeria" class="p-3 text-gray-200 hover:text-amber-400 hover:bg-white/5 rounded-lg transition-all font-medium">
+        Galeria de Trabalhos
+      </a>
+
+      <a href="/gerar" class="p-3 bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-black rounded-lg transition-all font-semibold flex items-center gap-2">
+      <span>⚡ Gerar Lista de Materiais</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Contatos do config.json no rodapé do Menu -->
+  <div class="p-6 border-t border-gray-800 bg-black/30">
+    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-3">Fale Conosco</p>
+    <div class="flex flex-col gap-2">
+      {config.contatos.map((contato) => (
+        <a 
+          href={`https://wa.me/${contato.telefone}`} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 text-sm text-sky-400 hover:text-sky-300 transition-colors"
+        >
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          {contato.nome}
+        </a>
+      ))}
+    </div>
+  </div>
+</aside>
+
+
+<script>
+  const openBtn = document.getElementById('open-menu');
+  const closeBtn = document.getElementById('close-menu');
+  const overlay = document.getElementById('menu-overlay');
+  const drawer = document.getElementById('menu-drawer');
+  const menuLinks = document.querySelectorAll('#menu-drawer nav a');
+
+  function toggleMenu(open: boolean) {
+    if (open) {
+      overlay?.classList.remove('opacity-0', 'pointer-events-none');
+      drawer?.classList.remove('translate-x-full');
+    } else {
+      overlay?.classList.add('opacity-0', 'pointer-events-none');
+      drawer?.classList.add('translate-x-full');
+    }
+  }
+
+  openBtn?.addEventListener('click', () => toggleMenu(true));
+  closeBtn?.addEventListener('click', () => toggleMenu(false));
+  overlay?.addEventListener('click', () => toggleMenu(false));
+
+  // Fecha a gaveta do menu ao clicar em qualquer link de navegação
+  menuLinks.forEach((link) => {
+    link.addEventListener('click', () => toggleMenu(false));
+  });
+</script>

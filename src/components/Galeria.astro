@@ -1,0 +1,223 @@
+---
+// Mapeamento dos itens da galeria baseados nos arquivos da pasta public/galeria/
+const midias = [
+  { tipo: 'video', src: '/galeria/galeria (1).mp4', thumb: '/galeria/galeria (1).jpeg', alt: 'Vídeo do Serviço' },
+  { tipo: 'imagem', src: '/galeria/galeria (1).jpeg', alt: 'Serviço Elétrico RTA 1' },
+  { tipo: 'imagem', src: '/galeria/galeria (2).jpeg', alt: 'Serviço Elétrico RTA 2' },
+  { tipo: 'imagem', src: '/galeria/galeria (3).jpeg', alt: 'Serviço Elétrico RTA 3' },
+  { tipo: 'imagem', src: '/galeria/galeria (4).jpeg', alt: 'Serviço Elétrico RTA 4' },
+  { tipo: 'imagem', src: '/galeria/galeria (5).jpeg', alt: 'Serviço Elétrico RTA 5' },
+  { tipo: 'imagem', src: '/galeria/galeria (6).jpeg', alt: 'Serviço Elétrico RTA 6' },
+  { tipo: 'imagem', src: '/galeria/galeria (7).jpeg', alt: 'Serviço Elétrico RTA 7' },
+  { tipo: 'imagem', src: '/galeria/galeria (8).jpeg', alt: 'Serviço Elétrico RTA 8' },
+  { tipo: 'imagem', src: '/galeria/galeria (10).jpeg', alt: 'Serviço Elétrico RTA 10' },
+  { tipo: 'imagem', src: '/galeria/galeria (11).jpeg', alt: 'Serviço Elétrico RTA 11' },
+  { tipo: 'imagem', src: '/galeria/galeria (12).jpeg', alt: 'Serviço Elétrico RTA 12' },
+  { tipo: 'imagem', src: '/galeria/galeria (13).jpeg', alt: 'Serviço Elétrico RTA 13' },
+  { tipo: 'imagem', src: '/galeria/galeria (14).jpeg', alt: 'Serviço Elétrico RTA 14' },
+  { tipo: 'imagem', src: '/galeria/galeria (15).jpeg', alt: 'Serviço Elétrico RTA 15' },
+  { tipo: 'imagem', src: '/galeria/galeria (16).jpeg', alt: 'Serviço Elétrico RTA 16' },
+  { tipo: 'imagem', src: '/galeria/galeria (17).jpeg', alt: 'Serviço Elétrico RTA 17' },
+  { tipo: 'imagem', src: '/galeria/galeria (18).jpeg', alt: 'Serviço Elétrico RTA 18' },
+  { tipo: 'imagem', src: '/galeria/galeria (19).jpeg', alt: 'Serviço Elétrico RTA 19' },
+  { tipo: 'imagem', src: '/galeria/galeria (20).jpeg', alt: 'Serviço Elétrico RTA 20' },
+  { tipo: 'imagem', src: '/galeria/galeria (21).jpeg', alt: 'Serviço Elétrico RTA 21' },
+  { tipo: 'imagem', src: '/galeria/galeria (22).jpeg', alt: 'Serviço Elétrico RTA 22' },
+  { tipo: 'imagem', src: '/galeria/galeria (23).jpeg', alt: 'Serviço Elétrico RTA 23' },
+  { tipo: 'imagem', src: '/galeria/galeria (24).jpeg', alt: 'Serviço Elétrico RTA 24' },
+  { tipo: 'imagem', src: '/galeria/galeria (25).jpeg', alt: 'Serviço Elétrico RTA 25' },
+  { tipo: 'imagem', src: '/galeria/galeria (26).jpeg', alt: 'Serviço Elétrico RTA 26' },
+  { tipo: 'imagem', src: '/galeria/WhatsApp Image 2026-09-28 at fghfghf12.15.53.jpeg', alt: 'Serviço Elétrico Recente' }
+];
+---
+
+<section id="galeria" class="w-full max-w-6xl mx-auto px-4 py-12">
+  <div class="text-center mb-8">
+    <span class="text-xs font-semibold text-amber-500 uppercase tracking-widest">Portfólio</span>
+    <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Nossos Trabalhos e Projetos</h2>
+    <p class="text-gray-400 text-sm mt-2">Clique em qualquer foto ou vídeo para ampliar</p>
+  </div>
+
+  <!-- Grid de Imagens -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
+    {midias.map((item, index) => (
+      <button
+        class="btn-galeria-item group relative aspect-square bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 hover:border-amber-500/50 transition-all focus:outline-none"
+        data-index={index}
+      >
+        {item.tipo === 'video' ? (
+          <div class="w-full h-full relative">
+            <video src={item.src} class="w-full h-full object-cover" muted loop preload="metadata"></video>
+            <!-- Ícone de Play para identificar vídeo -->
+            <div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition-all">
+              <div class="w-12 h-12 rounded-full bg-amber-500 text-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 fill-current ml-1" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <img
+            src={item.src}
+            alt={item.alt}
+            loading="lazy"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        )}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      </button>
+    ))}
+  </div>
+</section>
+
+<!-- Modal Lightbox (Modal de Zoom) -->
+<div
+  id="lightbox-modal"
+  class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4"
+>
+  <!-- Botão Fechar -->
+  <button
+    id="lightbox-close"
+    aria-label="Fechar Galeria"
+    class="absolute top-5 right-5 text-gray-300 hover:text-amber-400 p-2 z-10 rounded-full bg-black/50 hover:bg-black/80 transition-all"
+  >
+    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+
+  <!-- Botão Anterior -->
+  <button
+    id="lightbox-prev"
+    aria-label="Imagem Anterior"
+    class="absolute left-3 text-gray-300 hover:text-amber-400 p-3 z-10 rounded-full bg-black/50 hover:bg-black/80 transition-all"
+  >
+    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <!-- Container de Mídia Reativa -->
+  <div class="max-w-4xl max-h-[85vh] w-full h-full flex items-center justify-center relative">
+    <img id="lightbox-img" src="" alt="Imagem Ampliada" class="max-w-full max-h-[85vh] object-contain rounded-lg hidden" />
+    <video id="lightbox-video" src="" controls class="max-w-full max-h-[85vh] rounded-lg hidden"></video>
+  </div>
+
+  <!-- Botão Próximo -->
+  <button
+    id="lightbox-next"
+    aria-label="Próxima Imagem"
+    class="absolute right-3 text-gray-300 hover:text-amber-400 p-3 z-10 rounded-full bg-black/50 hover:bg-black/80 transition-all"
+  >
+    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+</div>
+
+<script>
+  // Dados passados para o script do cliente
+  const midiasData = [
+    { tipo: 'video', src: '/galeria/galeria (1).mp4' },
+    { tipo: 'imagem', src: '/galeria/galeria (1).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (2).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (3).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (4).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (5).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (6).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (7).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (8).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (10).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (11).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (12).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (13).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (14).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (15).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (16).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (17).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (18).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (19).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (20).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (21).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (22).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (23).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (24).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (25).jpeg' },
+    { tipo: 'imagem', src: '/galeria/galeria (26).jpeg' },
+    { tipo: 'imagem', src: '/galeria/WhatsApp Image 2026-09-28 at fghfghf12.15.53.jpeg' }
+  ];
+
+  let currentIndex = 0;
+  const modal = document.getElementById('lightbox-modal');
+  const imgElement = document.getElementById('lightbox-img') as HTMLImageElement;
+  const videoElement = document.getElementById('lightbox-video') as HTMLVideoElement;
+  const btnClose = document.getElementById('lightbox-close');
+  const btnPrev = document.getElementById('lightbox-prev');
+  const btnNext = document.getElementById('lightbox-next');
+  const buttons = document.querySelectorAll('.btn-galeria-item');
+
+  function openLightbox(index: number) {
+    currentIndex = index;
+    updateLightbox();
+    modal?.classList.remove('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    modal?.classList.add('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = '';
+    if (videoElement) {
+      videoElement.pause();
+      videoElement.src = '';
+    }
+  }
+
+  function updateLightbox() {
+    const item = midiasData[currentIndex];
+    if (item.tipo === 'video') {
+      imgElement.classList.add('hidden');
+      videoElement.classList.remove('hidden');
+      videoElement.src = item.src;
+      videoElement.play();
+    } else {
+      videoElement.classList.add('hidden');
+      videoElement.pause();
+      imgElement.classList.remove('hidden');
+      imgElement.src = item.src;
+    }
+  }
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.getAttribute('data-index'));
+      openLightbox(idx);
+    });
+  });
+
+  btnClose?.addEventListener('click', closeLightbox);
+
+  btnPrev?.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + midiasData.length) % midiasData.length;
+    updateLightbox();
+  });
+
+  btnNext?.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % midiasData.length;
+    updateLightbox();
+  });
+
+  // Fechar ao clicar no fundo preto
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeLightbox();
+  });
+
+  // Navegação por teclado (Setas e Esc)
+  window.addEventListener('keydown', (e) => {
+    if (!modal?.classList.contains('opacity-0')) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') btnPrev?.click();
+      if (e.key === 'ArrowRight') btnNext?.click();
+    }
+  });
+</script>

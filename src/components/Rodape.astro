@@ -1,0 +1,50 @@
+---
+import config from '../data/config.json';
+
+const anoAtual = new Date().getFullYear();
+---
+
+<footer class="bg-[#0b0a0f] border-t border-amber-500/20 text-gray-400 py-10 px-4 mt-auto print:hidden">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    <div class="flex flex-col gap-3">
+      <img src="/logo.webp" alt="RTA Serviços Elétricos" class="h-14 w-auto object-contain self-start" />
+      <p class="text-sm text-gray-400 leading-relaxed">
+        Soluções elétricas residenciais, comerciais e rurais com segurança, agilidade e máxima eficiência.
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-2 text-sm">
+      <h3 class="text-amber-400 font-bold uppercase tracking-wider text-xs mb-1">Informações</h3>
+      <p class="text-gray-300 font-medium">{config.empresa.nome}</p>
+      <p><span class="text-gray-500">CNPJ:</span> {config.empresa.cnpj}</p>
+      <p><span class="text-gray-500">Endereço:</span> {config.empresa.endereco}</p>
+    </div>
+
+    <div class="flex flex-col gap-2 text-sm">
+      <h3 class="text-amber-400 font-bold uppercase tracking-wider text-xs mb-1">Canais de Contato</h3>
+      <div class="flex flex-col gap-1.5">
+        {config.contatos.map((contato) => (
+          <a
+            href={`https://wa.me/${contato.telefone}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-emerald-400 transition-colors flex items-center gap-2"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            {contato.nome}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto pt-6 border-t border-zinc-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+    <p>© {anoAtual} {config.empresa.nome}. Todos os direitos reservados.</p>
+    
+    <!-- Jabá Eleva Sites -->
+    <a href="https://elevasites.com.br" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+      <span>Desenvolvido por</span>
+      <img src="/eleva.webp" alt="Eleva Sites" class="h-5 w-auto object-contain" />
+    </a>
+  </div>
+</footer>
