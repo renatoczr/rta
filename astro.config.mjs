@@ -4,10 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   output: 'server',
-  adapter: cloudflare({
-    mode: 'directory',
-    imageService: 'cloudflare',
-  }),
+  adapter: cloudflare(),
   vite: {
     plugins: [tailwindcss()],
   },
