@@ -3,7 +3,7 @@ import '../styles/global.css';
 import config from '../data/config.json';
 
 interface Props {
-	title?: string;
+    title?: string;
 }
 
 const { title = config.empresa.nome } = Astro.props;
@@ -11,14 +11,20 @@ const { title = config.empresa.nome } = Astro.props;
 
 <!doctype html>
 <html lang="pt-BR" class="scroll-smooth">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/webp" href="/favicon.webp" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body class="bg-gray-50 text-gray-800 antialiased min-h-screen flex flex-col">
-		<slot />
-	</body>
-</html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/webp" href="/favicon.webp" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+
+        <!-- Open Graph / WhatsApp -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Lista de Materiais — RTA Serviços Elétricos" />
+        <meta property="og:description" content="Confira a lista de materiais do seu orçamento." />
+        <meta property="og:image" content="/ogimage.webp" />
+    </head>
+    <body class="bg-gray-50 text-gray-800 antialiased min-h-screen flex flex-col">
+        <slot />
+    </body>
+</html>		
