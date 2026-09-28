@@ -160,20 +160,18 @@ import Rodape from '../components/Rodape.astro';
     };
 
     try {
-      // Salva no Cloudflare KV via API do projeto
-      const response = await fetch('/api/salvar-lista.json', {
+      const resposta = await fetch('/api/salvar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosObj),
       });
 
-      const resultado = await response.json();
+      const resultado = await resposta.json();
 
       if (resultado.id) {
-        // Redireciona para a página de exibição com o ID do KV na URL
         window.location.href = `/lista?id=${resultado.id}`;
       } else {
-        alert('Erro ao salvar no servidor. Tente novamente.');
+        alert('Erro ao salvar: ' + (resultado.error || 'Erro desconhecido'));
         if (btnSubmit) {
           btnSubmit.disabled = false;
           btnSubmit.innerText = 'Gerar e Visualizar Lista';

@@ -2,92 +2,55 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Rodape from '../components/Rodape.astro';
-
-// Pega o ID passado na URL (ex: /lista?id=rta_123456)
-const id = Astro.url.searchParams.get('id');
-
-let lista = null;
-let erro = null;
-
-if (id) {
-  try {
-    const runtime = (Astro.locals as any).runtime;
-    const LISTAS_KV = runtime?.env?.LISTAS_KV;
-
-    if (LISTAS_KV) {
-      const dadosStr = await LISTAS_KV.get(id);
-      if (dadosStr) {
-        lista = JSON.parse(dadosStr);
-      } else {
-        erro = 'Lista não encontrada ou expirada.';
-      }
-    } else {
-      erro = 'Conexão com o KV não configurada.';
-    }
-  } catch (e) {
-    erro = 'Erro ao carregar a lista do servidor.';
-  }
-} else {
-  erro = 'Nenhum ID de lista foi informado.';
-}
 ---
 
-<Layout title="Visualizar Lista — RTA Serviços Elétricos">
+<Layout title="Lista de Materiais — RTA Serviços Elétricos">
   <Header />
 
   <main class="flex-1 bg-[#121118] text-white py-10 px-4">
     <div class="max-w-2xl mx-auto bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-      {erro ? (
-        <div class="text-center py-8">
-          <p class="text-red-400 font-semibold text-lg mb-4">{erro}</p>
-          <a href="/gerar" class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-bold px-6 py-3 rounded-xl transition-all">
-            Criar uma Nova Lista
+      <div id="status-carregando" class="text-center py-10 text-gray-400">
+        Carregando lista de materiais...
+      </div>
+
+      <div id="status-erro" class="hidden text-center py-10 text-red-400"></div>
+
+      <div id="conteudo-lista" class="hidden">
+        <div class="flex justify-between items-start mb-6 border-b border-zinc-800 pb-4">
+          <div>
+            <h1 class="text-2xl font-bold text-amber-400">Orçamento / Lista de Materiais</h1>
+            <p id="cliente-info" class="text-sm text-gray-300 mt-1"></p>
+          </div>
+          <span id="data-lista" class="text-xs text-gray-400 bg-zinc-800 px-3 py-1 rounded-full"></span>
+        </div>
+
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-zinc-700 text-amber-400 uppercase text-xs">
+                <th class="py-2 px-3 w-16">Qtd</th>
+                <th class="py-2 px-3">Descrição do Material</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-itens" class="divide-y divide-zinc-800"></tbody>
+          </table>
+        </div>
+
+        <div class="flex gap-3">
+          <button
+            id="btn-copiar"
+            class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-4 rounded-xl text-sm transition-all text-center"
+          >
+            Copiar Texto da Lista
+          </button>
+          <a
+            href="/gerar"
+            class="bg-amber-500 hover:bg-amber-400 text-black font-semibold py-3 px-5 rounded-xl text-sm transition-all text-center"
+          >
+            Nova Lista
           </a>
         </div>
-      ) : (
-        <div>
-          <div class="border-b border-zinc-800 pb-4 mb-6 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-            <div>
-              <h1 class="text-2xl font-bold text-amber-400">Lista de Materiais</h1>
-              <p class="text-sm text-gray-400">Cliente: <strong class="text-white">{lista.nome}</strong></p>
-              <p class="text-sm text-gray-400">Contato: <strong class="text-white">{lista.fone}</strong></p>
-            </div>
-            <span class="text-xs text-gray-500 bg-black/40 px-3 py-1.5 rounded-lg border border-zinc-800 self-start sm:self-auto">
-              Gerado em: {lista.data}
-            </span>
-          </div>
-
-          <!-- Tabela / Lista de Itens -->
-          <div class="space-y-2 mb-6">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Itens Solicitados</p>
-            {lista.itens.map((item: any) => (
-              <div class="flex items-center gap-3 bg-black/40 border border-zinc-800 p-3 rounded-xl">
-                <span class="bg-amber-500/10 text-amber-400 font-mono font-bold text-xs px-2.5 py-1 rounded-md border border-amber-500/20">
-                  {item.qtd}x
-                </span>
-                <span class="text-sm text-gray-200 flex-1">{item.desc}</span>
-              </div>
-            ))}
-          </div>
-
-          <!-- Ações e Compartilhamento -->
-          <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-zinc-800">
-            <button
-              id="btn-copiar"
-              class="flex-1 bg-amber-500 hover:bg-amber-400 text-black font-bold py-3.5 px-4 rounded-xl transition-all text-center text-sm"
-            >
-              Copiar Link para Compartilhar
-            </button>
-
-            <a
-              href="/gerar"
-              class="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold py-3.5 px-5 rounded-xl transition-all text-center text-sm"
-            >
-              Nova Lista
-            </a>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   </main>
 
@@ -95,13 +58,72 @@ if (id) {
 </Layout>
 
 <script>
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+
+  const elCarregando = document.getElementById('status-carregando');
+  const elErro = document.getElementById('status-erro');
+  const elConteudo = document.getElementById('conteudo-lista');
+  const elClienteInfo = document.getElementById('cliente-info');
+  const elData = document.getElementById('data-lista');
+  const elTabela = document.getElementById('tabela-itens');
   const btnCopiar = document.getElementById('btn-copiar');
 
-  btnCopiar?.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href);
-    btnCopiar.innerText = '✓ Link Copiado!';
-    setTimeout(() => {
-      btnCopiar.innerText = 'Copiar Link para Compartilhar';
-    }, 3000);
-  });
+  if (!id) {
+    if (elCarregando) elCarregando.classList.add('hidden');
+    if (elErro) {
+      elErro.textContent = 'Nenhum código de lista foi fornecido na URL.';
+      elErro.classList.remove('hidden');
+    }
+  } else {
+    fetch(`/api/buscar?id=${id}`)
+      .then((res) => res.json())
+      .then((dados) => {
+        if (dados.error) {
+          if (elCarregando) elCarregando.classList.add('hidden');
+          if (elErro) {
+            elErro.textContent = dados.error;
+            elErro.classList.remove('hidden');
+          }
+          return;
+        }
+
+        if (elClienteInfo) elClienteInfo.innerHTML = `<strong>Cliente:</strong> ${dados.nome} (${dados.fone})`;
+        if (elData) elData.textContent = dados.data;
+
+        if (elTabela && Array.isArray(dados.itens)) {
+          elTabela.innerHTML = dados.itens
+            .map(
+              (item: { qtd: string; desc: string }) => `
+              <tr>
+                <td class="py-3 px-3 font-semibold text-amber-400">${item.qtd}</td>
+                <td class="py-3 px-3 text-gray-200">${item.desc}</td>
+              </tr>
+            `
+            )
+            .join('');
+        }
+
+        if (elCarregando) elCarregando.classList.add('hidden');
+        if (elConteudo) elConteudo.classList.remove('hidden');
+
+        btnCopiar?.addEventListener('click', () => {
+          let texto = `*Lista de Materiais — RTA Serviços Elétricos*\n`;
+          texto += `Cliente: ${dados.nome}\nData: ${dados.data}\n\n`;
+          dados.itens.forEach((i: { qtd: string; desc: string }) => {
+            texto += `• ${i.qtd}x ${i.desc}\n`;
+          });
+
+          navigator.clipboard.writeText(texto);
+          alert('Lista copiada para a área de transferência!');
+        });
+      })
+      .catch(() => {
+        if (elCarregando) elCarregando.classList.add('hidden');
+        if (elErro) {
+          elErro.textContent = 'Erro ao carregar os dados do servidor.';
+          elErro.classList.remove('hidden');
+        }
+      });
+  }
 </script>
