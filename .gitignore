@@ -23,4 +23,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-./public/conteudo_completo.txt
+.wrangler
+.astro
+node_modules
+dist
