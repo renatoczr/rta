@@ -1,46 +1,94 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Rodape from '../components/Rodape.astro';
+import config from '../data/config.json';
 ---
 
 <Layout title="Lista de Materiais — RTA Serviços Elétricos">
-  <Header />
-
-  <main class="flex-1 bg-[#121118] text-white py-10 px-4">
-    <div class="max-w-2xl mx-auto bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-      <div id="status-carregando" class="text-center py-10 text-gray-400">
+  <main class="min-h-screen bg-slate-100 text-slate-800 py-6 px-4 print:py-0 print:px-0 print:bg-white flex flex-col justify-center items-center">
+    <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xl print:shadow-none print:border-none print:p-0 print:max-w-none">
+      
+      <!-- Status Carregando -->
+      <div id="status-carregando" class="text-center py-12 text-slate-500 font-medium">
         Carregando lista de materiais...
       </div>
 
-      <div id="status-erro" class="hidden text-center py-10 text-red-400"></div>
+      <!-- Status Erro -->
+      <div id="status-erro" class="hidden text-center py-12 text-red-600 font-semibold"></div>
 
-      <div id="conteudo-lista" class="hidden">
-        <div class="flex justify-between items-start mb-6 border-b border-zinc-800 pb-4">
-          <div>
-            <h1 class="text-2xl font-bold text-amber-400">Lista de Materiais</h1>
-            <p id="cliente-info" class="text-sm text-gray-300 mt-1"></p>
+      <!-- Conteúdo Principal da Lista -->
+      <div id="conteudo-lista" class="hidden flex flex-col justify-between min-h-[90vh] print:min-h-0">
+        
+        <div>
+          <!-- 1. CABEÇALHO COM LOGO, EMPRESA E CNPJ -->
+          <div class="flex items-center justify-between border-b-2 border-amber-500 pb-5 mb-6">
+            <div class="flex items-center gap-4">
+              <img 
+                src="/logo.webp" 
+                alt="Logo RTA Serviços Elétricos" 
+                class="h-16 w-auto object-contain"
+                onerror="this.style.display='none'"
+              />
+              <div>
+                <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight uppercase">
+                  {config.empresa.nome}
+                </h1>
+                <p class="text-xs sm:text-sm font-semibold text-slate-600">
+                  CNPJ: {config.empresa.cnpj}
+                </p>
+              </div>
+            </div>
+            <div class="text-right hidden sm:block print:block">
+              <span class="text-xs font-bold text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full uppercase tracking-wider">
+                Documento
+              </span>
+            </div>
           </div>
-          <span id="data-lista" class="text-xs text-gray-400 bg-zinc-800 px-3 py-1 rounded-full"></span>
+
+          <!-- 2. IDENTIFICAÇÃO DO CLIENTE E DATA DA LISTA -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div>
+              <p class="text-xs font-bold text-amber-600 uppercase tracking-wider">Lista de Materiais</p>
+              <h2 id="cliente-info" class="text-base sm:text-lg font-bold text-slate-900"></h2>
+            </div>
+            <div class="text-xs font-semibold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm">
+              Data: <span id="data-lista" class="text-slate-900 font-bold"></span>
+            </div>
+          </div>
+
+          <!-- 3. TABELA DE MATERIAIS -->
+          <div class="overflow-x-auto mb-8">
+            <table class="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr class="border-b-2 border-slate-800 text-slate-900 uppercase text-xs tracking-wider">
+                  <th class="py-2.5 px-3 w-16 font-black text-center bg-slate-100 border border-slate-200">Qtd</th>
+                  <th class="py-2.5 px-3 font-black bg-slate-100 border border-slate-200">Descrição do Material</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-itens" class="divide-y divide-slate-200 font-medium text-slate-800"></tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="overflow-x-auto mb-6">
-          <table class="w-full text-left text-sm border-collapse">
-            <thead>
-              <tr class="border-b border-zinc-700 text-amber-400 uppercase text-xs">
-                <th class="py-2 px-3 w-16">Qtd</th>
-                <th class="py-2 px-3">Descrição do Material</th>
-              </tr>
-            </thead>
-            <tbody id="tabela-itens" class="divide-y divide-zinc-800"></tbody>
-          </table>
+        <!-- 4. RODAPÉ INTERNO (ENDEREÇO E TELEFONES) -->
+        <div class="mt-auto border-t border-slate-300 pt-4 text-xs text-slate-600 flex flex-col sm:flex-row justify-between items-center gap-3 text-center sm:text-left">
+          <div>
+            <p class="font-bold text-slate-800">{config.empresa.nome}</p>
+            <p class="text-[11px]">{config.empresa.endereco}</p>
+          </div>
+          <div class="flex flex-wrap justify-center sm:justify-end gap-x-4 gap-y-1 font-semibold text-slate-700">
+            {config.contatos.map((contato) => (
+              <span class="whitespace-nowrap">
+                {contato.nome}: <strong class="text-slate-900">{contato.telefone}</strong>
+              </span>
+            ))}
+          </div>
         </div>
 
-        <!-- Painel de Ações Rápidas -->
-        <div class="flex flex-col gap-3 print:hidden">
+        <!-- 5. PAINEL DE AÇÕES RÁPIDAS (OCULTO NA IMPRESSÃO) -->
+        <div class="flex flex-col gap-3 mt-8 print:hidden pt-4 border-t border-slate-200">
           <button
             id="btn-whatsapp"
-            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-lg"
+            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
           >
             <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
               <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.762.459 3.48 1.332 5.001L2 22l5.124-1.334c1.472.802 3.136 1.224 4.884 1.224 5.508 0 9.99-4.478 9.99-9.984 0-2.665-1.037-5.17-2.925-7.059A9.92 9.92 0 0 0 12.012 2z"/>
@@ -51,29 +99,28 @@ import Rodape from '../components/Rodape.astro';
           <div class="grid grid-cols-3 gap-2">
             <button
               id="btn-copiar"
-              class="bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-3 rounded-xl text-xs transition-all text-center"
+              class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-3 px-3 rounded-xl text-xs transition-all text-center cursor-pointer"
             >
               Copiar Link
             </button>
             <button
               id="btn-imprimir"
-              class="bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-3 px-3 rounded-xl text-xs transition-all text-center"
+              class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 px-3 rounded-xl text-xs transition-all text-center cursor-pointer shadow-md"
             >
               Imprimir / PDF
             </button>
             <a
               href="/"
-              class="bg-zinc-800 hover:bg-zinc-700 text-red-400 font-semibold py-3 px-3 rounded-xl text-xs transition-all text-center flex items-center justify-center border border-red-500/20"
+              class="bg-slate-200 hover:bg-slate-300 text-red-600 font-semibold py-3 px-3 rounded-xl text-xs transition-all text-center flex items-center justify-center border border-red-200"
             >
               Fechar
             </a>
           </div>
         </div>
+
       </div>
     </div>
   </main>
-
-  <Rodape />
 </Layout>
 
 <script>
@@ -110,16 +157,16 @@ import Rodape from '../components/Rodape.astro';
           return;
         }
 
-        if (elClienteInfo) elClienteInfo.innerHTML = `<strong>Cliente:</strong> ${dados.nome} (${dados.fone})`;
+        if (elClienteInfo) elClienteInfo.innerHTML = `Cliente: <span class="font-normal text-slate-700">${dados.nome} (${dados.fone})</span>`;
         if (elData) elData.textContent = dados.data;
 
         if (elTabela && Array.isArray(dados.itens)) {
           elTabela.innerHTML = dados.itens
             .map(
               (item: { qtd: string; desc: string }) => `
-              <tr>
-                <td class="py-3 px-3 font-semibold text-amber-400">${item.qtd}</td>
-                <td class="py-3 px-3 text-gray-200">${item.desc}</td>
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="py-2.5 px-3 font-bold text-slate-900 border border-slate-200 text-center bg-slate-50/50">${item.qtd}</td>
+                <td class="py-2.5 px-3 text-slate-900 border border-slate-200">${item.desc}</td>
               </tr>
             `
             )
@@ -129,7 +176,7 @@ import Rodape from '../components/Rodape.astro';
         if (elCarregando) elCarregando.classList.add('hidden');
         if (elConteudo) elConteudo.classList.remove('hidden');
 
-        // Ação: Botão WhatsApp (com mensagem simplificada)
+        // Botão WhatsApp
         btnWhatsapp?.addEventListener('click', () => {
           const foneLimpo = dados.fone.replace(/\D/g, '');
           const linkLista = window.location.href;
@@ -144,13 +191,13 @@ import Rodape from '../components/Rodape.astro';
           window.open(urlWhatsapp, '_blank');
         });
 
-        // Ação: Botão Copiar Link
+        // Botão Copiar Link
         btnCopiar?.addEventListener('click', () => {
           navigator.clipboard.writeText(window.location.href);
           alert('Link da lista copiado para a área de transferência!');
         });
 
-        // Ação: Botão Imprimir
+        // Botão Imprimir
         btnImprimir?.addEventListener('click', () => {
           window.print();
         });
