@@ -1,8 +1,8 @@
 ---
 import config from '../data/config.json';
 
-// Limpa pontuações do CNPJ para gerar a chave PIX numérica
-const pixCnpj = config.empresa.cnpj.replace(/\D/g, '');
+// Chave PIX do tipo telefone
+const pixTelefone = "64999957238";
 const mensagemZap = encodeURIComponent("⚡⚡‎Rta Serviços Elétricos agradece seu contato. Como podemos ajudar?");
 ---
 
@@ -63,14 +63,14 @@ const mensagemZap = encodeURIComponent("⚡⚡‎Rta Serviços Elétricos agrade
   <!-- Botão de Copiar PIX -->
   <button
     id="btn-copy-pix"
-    data-pix={pixCnpj}
+    data-pix={pixTelefone}
     class="w-full py-4 px-5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold rounded-2xl shadow-lg transition-all flex items-center justify-between active:scale-[0.98] cursor-pointer"
   >
     <div class="flex items-center gap-3">
       <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
         <path d="M12 2L2 12l10 10 10-10L12 2zm0 3.8L18.2 12 12 18.2 5.8 12 12 5.8z"/>
       </svg>
-      <span class="text-base">Copiar Chave PIX (CNPJ)</span>
+      <span class="text-base">Copiar Chave PIX (Telefone)</span>
     </div>
     <span class="text-xs bg-zinc-950/10 px-2.5 py-1 rounded-full text-zinc-900">
       Clique para copiar
@@ -86,7 +86,7 @@ const mensagemZap = encodeURIComponent("⚡⚡‎Rta Serviços Elétricos agrade
   <svg class="w-5 h-5 stroke-amber-400" fill="none" viewBox="0 0 24 24">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
   </svg>
-  <span>PIX CNPJ copiado com sucesso!</span>
+  <span>PIX Telefone copiado com sucesso!</span>
 </div>
 
 <script>
